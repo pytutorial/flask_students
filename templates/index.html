@@ -1,1 +1,18 @@
-Home page
+<h3>Student List</h3>
+<table border="1">
+  <tr>
+    <th>No.</th>
+    <th>Student Number</th>
+    <th>Student Name</th>
+  </tr>
+  {% for st in students %}
+    <tr>
+      <td>{{loop.index}}</td>
+      <td>{{st.studentNo}}</td>
+      <td>{{st.name}}</td>
+    </tr>
+  {% endfor %}
+</table>
+<a href='/create_student'>
+  Add new student
+</a>
