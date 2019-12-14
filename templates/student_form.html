@@ -1,13 +1,5 @@
-<!--templates/student_form.html-->
-<form method="POST"
-    action='/save_student'>
-  Student Number:
-    <input name="studentNo">
-  <br>
-  Student Name:
-    <input name="name">
-  <br>
-  <button type="submit">
-    Save
-  </button>
+<form method="POST">
+  Student Number: <input value="{{studentNo}}" name="studentNo"> <br>
+  Student name: <input value="{{name}}" name="name"> <br>
+  <button type="submit">Save</button>
 </form>

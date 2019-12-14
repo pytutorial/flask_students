@@ -1,15 +1,19 @@
-<h3>Student List</h3>
 <table border="1">
   <tr>
     <th>No.</th>
     <th>Student Number</th>
-    <th>Student Name</th>
+    <th>Name</th>
+    <th></th>
   </tr>
-  {% for st in students %}
+  {% for st in studentList %}
     <tr>
-      <td>{{loop.index}}</td>
-      <td>{{st.studentNo}}</td>
-      <td>{{st.name}}</td>
+      <td>{{ loop.index }}</td>
+      <td>{{ st.studentNo }}</td>
+      <td>{{ st.name }}</td>
+      <td>
+        <a href='/edit/{{st.id}}'>Edit</a>
+        <a href='/delete/{{st.id}}'>Delete</a>
+      </td>
     </tr>
   {% endfor %}
 </table>

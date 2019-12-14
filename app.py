@@ -1,33 +1,57 @@
-from flask import Flask, request, render_template, redirect
+from flask import Flask, redirect, request, render_template
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students.db'
+db = SQLAlchemy(app)
 
-students = [
-    {'id' : 1, 'studentNo': '10001', 'name': 'Student 1'},
-    {'id' : 2, 'studentNo': '10002', 'name': 'Student 2'},
-]
+class Student(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    studentNo = db.Column('student_no', db.String(20), unique=True)
+    name = db.Column(db.String(30))
+
+    def __init__(self, studentNo, name):
+        self.studentNo = studentNo
+        self.name = name
+
+db.create_all()
 
 @app.route('/')
 def index():
-    return render_template('index.html', 
-            students=students)
+  studentList = Student.query.all()
+  return render_template('index.html', studentList=studentList)
 
-@app.route('/create_student')
+@app.route('/create_student', methods=['GET', 'POST'])
 def createStudent():
-    return render_template(
-        'student_form.html')
+  if request.method == 'GET':
+    return render_template('student_form.html')
+  else:
+    studentNo = request.form.get('studentNo')
+    name = request.form.get('name')
+    st = Student(studentNo, name)
+    db.session.add(st)
+    db.session.commit()
+    return redirect('/')
 
-@app.route('/save_student',methods=['POST'])
-def saveStudent():
-    student = dict(request.form)
-    if len(students) == 0:
-        student['id'] = 1
-    else:
-        student['id'] = 1+students[-1]['id']
-    
-    students.append(student)
-    return redirect('/')        
+@app.route('/delete/<int:id>')
+def deleteStudent(id):
+  st = Student.query.get(id)
+  db.session.delete(st)
+  db.session.commit()
+  return redirect('/')
+
+@app.route('/edit/<int:id>', methods=['POST', 'GET'])
+def editStudent(id):
+  if request.method == 'GET':
+    st = Student.query.get(id)
+    return render_template('student_form.html', 
+                            studentNo=st.studentNo,
+                            name=st.name)
+  else:
+    st = Student.query.get(id)
+    st.studentNo = request.form.get('studentNo')
+    st.name = request.form.get('name')
+    db.session.commit()
+    return redirect('/')
 
 app.run(debug=True)
-
-# new
